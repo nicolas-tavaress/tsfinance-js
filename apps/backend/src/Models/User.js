@@ -1,9 +1,9 @@
 export class User {
-  constructor(username, email, document, fullname) {
-    this.username = username;
-    this.email = email;
-    this.document = document;
-    this.fullname = fullname;
+  constructor(json) {
+    this.username = json.username;
+    this.email = json.email;
+    this.document = json.document;
+    this.fullname = json.fullname;
   }
 
   validateUserFields() {
@@ -14,9 +14,5 @@ export class User {
         throw new Error(`Missing required field: ${field}`);
       }
     }
-  }
-
-  updateUser(id, user) {
-    
   }
 }
