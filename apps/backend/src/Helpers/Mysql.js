@@ -1,9 +1,12 @@
 import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
-dotenv.config();
+import path from 'path';
+
+dotenv.config({ path: path.resolve(process.cwd(), '../../.env') });
 
 class Mysql {
   static async openDb() {
+    dotenv.config({ path: path.resolve(process.cwd(), '../../.env') })
     const pool = await mysql.createConnection({
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
@@ -16,18 +19,18 @@ class Mysql {
     return pool;
   }
 
-  query(sql, params = []) {
-    try {
-      if (!this.pool) {
-        throw new Error('Database connection pool is not initialized');
-      }
+  // query(sql, params = []) {
+  //   try {
+  //     if (!this.pool) {
+  //       throw new Error('Database connection pool is not initialized');
+  //     }
 
-      return this.pool.query(sql, params);
-    } catch (error) {
-      console.error('Error connecting to the database:', error);
-      throw error;
-    }
-  }
+  //     return this.pool.pool.query(sql, params);
+  //   } catch (error) {
+  //     console.error('Error connecting to the database:', error);
+  //     throw error;
+  //   }
+  // }
 }
 
 export default Mysql;

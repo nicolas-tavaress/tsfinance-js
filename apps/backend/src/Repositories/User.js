@@ -1,19 +1,32 @@
 import { openDb } from '../Models/Database.js';
 import { Http } from '../Helpers/Http.js';
 
-async function getUserById(id) {
+export const getAllUsers = async () => {
+  const db = await openDb('mysql');
+  try {
+    const [users] = await db.query('SELECT * FROM users');
+    const response = Http.makeResponse(users.length > 0 ? Http.STATUS.OK : Http.STATUS.NOT_FOUND, { users });
+    return response;
+  } catch (err) {
+    console.error('Error fetching users:', err);
+    throw err;
+  }
+};
+
+export const getUserById = async (id) => {
   const db = await openDb('mysql');
   try {
     const [user] = await db.query('SELECT * FROM users WHERE id = ?', [id]);
     const status = user.length > 0 ? Http.STATUS.OK : Http.STATUS.NOT_FOUND;
-    return Http.makeResponse(status, { user: user[0] });
+    const response = Http.makeResponse(status, { user });
+    return response;
   } catch (err) {
     console.error('Error fetching user:', err);
     throw err;
   }
-}
+};
 
-async function createUser(user) {
+export const createUser = async (user) => {
   const db = await openDb('mysql');
   try {
     const [result] = await db.query('INSERT INTO users SET ?', user);
@@ -22,25 +35,14 @@ async function createUser(user) {
       throw new Error('User creation failed');
     }
 
-    return Http.makeResponse(Http.STATUS.CREATED, { message: 'User created successfully' });
+    return Http.makeResponse(Http.STATUS.CREATED, { message: 'User created successfully', userId: result.insertId });
   } catch (err) {
     console.error('Error creating user:', err);
     throw err;
   }
-}
+};
 
-async function getAllUsers() {
-  const db = await openDb('mysql');
-  try {
-    const [users] = await db.query('SELECT * FROM users');
-    return Http.makeResponse(Http.STATUS.OK, { users });
-  } catch (err) {
-    console.error('Error fetching users:', err);
-    throw err;
-  }
-}
-
-async function updateUser(id, user) {
+export const updateUser = async (id, user) => {
   const db = await openDb('mysql');
   try {
     const [result] = await db.query('UPDATE users SET ? WHERE id = ?', [user, id]);
@@ -49,9 +51,9 @@ async function updateUser(id, user) {
     console.error('Error updating user:', err);
     throw err;
   }
-}
+};
 
-async function deleteUser(id) {
+export const deleteUser = async (id) => {
   const db = await openDb('mysql');
   try {
     await db.query('DELETE FROM users WHERE id = ?', [id]);
@@ -60,9 +62,9 @@ async function deleteUser(id) {
     console.error('Error deleting user:', err);
     throw err;
   }
-}
+};
 
-async function emailExists(email) {
+export const emailExists = async (email) => {
   const db = await openDb('mysql');
   try {
     const [email] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
@@ -71,9 +73,9 @@ async function emailExists(email) {
     console.error('Error checking email existence:', err);
     throw err;
   }
-}
+};
 
-async function documentExists(document) {
+export const documentExists = async (document) => {
   const db = await openDb('mysql');
   try {
     const [document] = await db.query('SELECT * FROM users WHERE document = ?', [document]);
@@ -82,6 +84,4 @@ async function documentExists(document) {
     console.error('Error checking document existence:', err);
     throw err;
   }
-}
-
-export { getUserById, createUser, getAllUsers, updateUser, deleteUser, emailExists, documentExists };
+};

@@ -5,10 +5,11 @@
   "license": "ISC",
   "type": "module",
   "scripts": {
-    "dev": "npx nodemon src/index.js",
+    "dev": "npx nodemon ./src/index.js",
     "build": "echo 'Nada para buildar'"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "mysql2": "^3.14.2",

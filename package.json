@@ -11,5 +11,8 @@
   },
   "devDependencies": {
     "turbo": "^1.11.3"
+  },
+  "dependencies": {
+    "path": "^0.12.7"
   }
 }
