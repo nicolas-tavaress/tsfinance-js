@@ -5,7 +5,11 @@ export const getAllUsers = async () => {
   const db = await openDb('mysql');
   try {
     const [users] = await db.query('SELECT * FROM users');
-    const response = Http.makeResponse(users.length > 0 ? Http.STATUS.OK : Http.STATUS.NOT_FOUND, { users });
+    const statusCode = users.length > 0 ? Http.STATUS.OK : Http.STATUS.NO_CONTENT;
+
+    const usersResult = !(users) ? [] : users;
+
+    const response = Http.makeResponse(statusCode, { users: usersResult });
     return response;
   } catch (err) {
     console.error('Error fetching users:', err);
@@ -17,7 +21,7 @@ export const getUserById = async (id) => {
   const db = await openDb('mysql');
   try {
     const [user] = await db.query('SELECT * FROM users WHERE id = ?', [id]);
-    const status = user.length > 0 ? Http.STATUS.OK : Http.STATUS.NOT_FOUND;
+    const status = user.length > 0 ? Http.STATUS.OK : Http.STATUS.NO_CONTENT;
     const response = Http.makeResponse(status, { user });
     return response;
   } catch (err) {
